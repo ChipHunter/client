@@ -1,6 +1,4 @@
-#include "Client.h"
-
-/**********************************************************************/
+#include "client.h"
 
 void ImpClient::sendTcp(int sck, const char* buf) {
     

@@ -15,7 +15,6 @@ public:
     void sendUdp(int sck, const char* buf, std::string ip, int port);
     void recvTcp(int sck, char* buf, int len);
     void recvUdp(int sck, char* buf, int len);
-
 };
 
 /**********************************************************************/
@@ -39,13 +38,11 @@ protected:
 
 class TCPClient : public Client {
 public:
-    void send(const char* buf) override final;
-    void recv(char* buf, int len) override final;
-
-private:
     TCPClient(std::string ip, int port);
     ~TCPClient();
 
+    void send(const char* buf) override final;
+    void recv(char* buf, int len) override final;
 };
 
 /**********************************************************************/
