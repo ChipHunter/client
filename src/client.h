@@ -8,30 +8,33 @@
 
 class ImpClient {
 public:
-    ImpClient();
-    ~ImpClient();
+    /* TCP related implementation*/
+    void setupTcp(std::string ip, int port);
+    void sendTcp(const char* buf);
+    void recvTcp(char* buf, int len);
+    void closeTcp();
 
-    void sendTcp(int sck, const char* buf);
-    void sendUdp(int sck, const char* buf, std::string ip, int port);
-    void recvTcp(int sck, char* buf, int len);
-    void recvUdp(int sck, char* buf, int len);
+    /* UDP related implementation*/
+    void sendUdp(const char* buf);
+    void recvUdp(char* buf, int len);
+    void setupUdp(std::string ip, int port);
+    void closeUdp();
+
+private:
+    std::string _ip;
+    int _sck;
+    int _port; 
 };
 
 /**********************************************************************/
 
 class Client{
 public:
-    Client(std::string ip, int port) : _ip{ip}, _port{port} {};
     virtual ~Client() {};
 
-    virtual void send(const char* buf) = 0;
+    virtual void send(const char* buf)    = 0;
     virtual void recv(char* buf, int len) = 0;
 
-protected:
-    ImpClient* _imp = nullptr;
-    int _sck = -1;
-    std::string _ip;
-    int _port; 
 };
 
 /**********************************************************************/
@@ -41,8 +44,11 @@ public:
     TCPClient(std::string ip, int port);
     ~TCPClient();
 
-    void send(const char* buf) override final;
+    void send(const char* buf)    override final;
     void recv(char* buf, int len) override final;
+
+private:
+    ImpClient _imp;
 };
 
 /**********************************************************************/
@@ -52,6 +58,9 @@ public:
     UDPClient(std::string ip, int port );
     ~UDPClient();
 
-    void send(const char* buf) override final;
+    void send(const char* buf)    override final;
     void recv(char* buf, int len) override final;
+
+private:
+    ImpClient _imp;
 };
