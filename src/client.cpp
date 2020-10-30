@@ -12,16 +12,25 @@ void ImpClient::setupTcp(std::string ip, int port) {
         throw std::system_error(errno, std::generic_category());
     }
 
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(_port);
-    if(inet_pton(AF_INET, _ip.c_str(), &serverAddr.sin_addr) == -1){
-        std::cout << "error in inet_pton:" << strerror(errno) << std::endl;
-        throw std::system_error(errno, std::generic_category());
-    }
+    try {
+        serverAddr.sin_family = AF_INET;
+        serverAddr.sin_port = htons(_port);
+        if(inet_pton(AF_INET, _ip.c_str(), &serverAddr.sin_addr) == -1){
+            std::cout << "error in inet_pton:" << strerror(errno) << std::endl;
+            throw std::system_error(errno, std::generic_category());
+        }
 
-    if(connect(_sck, (sockaddr*) &serverAddr, sizeof(serverAddr)) == -1) {
-        std::cout << "error in connect:" << strerror(errno) << std::endl;
-        throw std::system_error(errno, std::generic_category());
+        if(connect(_sck, (sockaddr*) &serverAddr, sizeof(serverAddr)) == -1) {
+            std::cout << "error in connect:" << strerror(errno) << std::endl;
+            throw std::system_error(errno, std::generic_category());
+        }
+    } catch(const std::system_error& e) {
+
+        if(close(_sck) == -1)
+            std::cout<< "Error closing the socket!: " << strerror(errno) << std::endl;
+        
+        throw e;
+
     }
 
 }
